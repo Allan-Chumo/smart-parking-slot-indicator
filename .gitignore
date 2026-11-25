@@ -15,3 +15,5 @@ node-red/.config.*
 node-red/node_modules/
 node-red/lib/
 *.log
+*.db-wal
+*.db-shm

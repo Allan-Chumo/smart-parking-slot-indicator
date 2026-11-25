@@ -35,9 +35,10 @@ def compose(*args, **kwargs):
 
 
 def sql(statement):
-    """Run SQL inside the Node-RED container so SQLite locking is shared with Node-RED."""
+    """Run SQL inside the Node-RED container so SQLite locking is shared with Node-RED.
+    .timeout makes the sqlite3 CLI wait for a lock held by Node-RED instead of failing at once."""
     result = compose("exec", "-T", "node-red", "sqlite3", "-json", "/db/parking.db",
-                     input=statement, capture_output=True, text=True)
+                     input=".timeout 5000\n" + statement, capture_output=True, text=True)
     return json.loads(result.stdout) if result.stdout.strip() else []
 
 

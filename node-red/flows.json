@@ -912,6 +912,7 @@
     "payloadType": "date",
     "wires": [
       [
+        "f0c0f1a5e0000002",
         "f000000000000023",
         "f000000000000024"
       ]
@@ -1069,5 +1070,39 @@
       "@flowfuse/node-red-dashboard": "1.37.0",
       "node-red-node-sqlite": "2.0.1"
     }
+  },
+  {
+    "id": "5dc0f1a5e0000001",
+    "type": "sqlite",
+    "z": "cd69ce63c01563ea",
+    "mydb": "c06f58ba20dd9c39",
+    "sqlquery": "msg.topic",
+    "sql": "",
+    "name": "Configure database",
+    "x": 750,
+    "y": 940,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "f0c0f1a5e0000002",
+    "type": "function",
+    "z": "cd69ce63c01563ea",
+    "name": "Configure SQLite (wait for locks, WAL)",
+    "func": "// Run once at start-up. busy_timeout makes SQLite wait up to 5 s instead of failing\n// at once when another program (DB Browser, the tests) is using the file.\n// WAL mode lets reads and writes happen at the same time.\nreturn [[\n    { topic: \"PRAGMA busy_timeout = 5000\", payload: [] },\n    { topic: \"PRAGMA journal_mode = WAL\", payload: [] }\n]];\n",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 520,
+    "y": 940,
+    "wires": [
+      [
+        "5dc0f1a5e0000001"
+      ]
+    ]
   }
 ]
