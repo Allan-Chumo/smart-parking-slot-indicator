@@ -1,0 +1,679 @@
+[
+    {
+        "id": "cd69ce63c01563ea",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7cf7b6e297d801ed",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "d31d090b50223b45",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#fcfcfd",
+            "primary": "#0d74ce",
+            "bgPage": "#f9f9fb",
+            "groupBg": "#ffffff",
+            "groupOutline": "#d9d9e0"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "210376e7bd9319a2",
+        "type": "ui-page",
+        "name": "Smart Parking Indicator",
+        "ui": "7cf7b6e297d801ed",
+        "path": "/page1",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "d31d090b50223b45",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "tabs": [],
+        "order": 1,
+        "className": "",
+        "visible": true,
+        "disabled": false
+    },
+    {
+        "id": "b377f7de55d8807a",
+        "type": "ui-group",
+        "name": "Parking Slots",
+        "page": "210376e7bd9319a2",
+        "width": 6,
+        "height": 1,
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default",
+        "keepLoaded": false,
+        "tab": ""
+    },
+    {
+        "id": "c4bf36e9ddaccc60",
+        "type": "mqtt-broker",
+        "name": "Existing EMQX broker",
+        "broker": "\tbroker.emqx.io",
+        "port": 1883,
+        "clientid": "nodered_smartparking_01",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "c06f58ba20dd9c39",
+        "type": "sqlitedb",
+        "db": "parking.db",
+        "mode": "RWC"
+    },
+    {
+        "id": "358b97bab48ab8bf",
+        "type": "ui-text",
+        "z": "cd69ce63c01563ea",
+        "group": "b377f7de55d8807a",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "Slot 1 Status Display",
+        "label": "Parking slot1",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "style": true,
+        "font": "Arial,Arial,Helvetica,sans-serif",
+        "fontSize": "20",
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 900,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "25c46e9e07ba70de",
+        "type": "mqtt in",
+        "z": "cd69ce63c01563ea",
+        "name": "Slot 1 MQTT Input",
+        "topic": "smartparking/slot1/status",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "c4bf36e9ddaccc60",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 260,
+        "wires": [
+            [
+                "701e330603b4aef1",
+                "f636525889002bf9",
+                "86cde05d27d26821",
+                "2fe0cb81ccc2fcd2"
+            ]
+        ]
+    },
+    {
+        "id": "701e330603b4aef1",
+        "type": "change",
+        "z": "cd69ce63c01563ea",
+        "name": "Extract Slot 1 Status",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.status",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 420,
+        "y": 240,
+        "wires": [
+            [
+                "ca1e8af19cf32806"
+            ]
+        ]
+    },
+    {
+        "id": "f636525889002bf9",
+        "type": "debug",
+        "z": "cd69ce63c01563ea",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 440,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "f57d7e6945f570bb",
+        "type": "mqtt in",
+        "z": "cd69ce63c01563ea",
+        "name": "Slot 3 MQTT Input",
+        "topic": "smartparking/slot3/status",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "c4bf36e9ddaccc60",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 440,
+        "wires": [
+            [
+                "ea9d18176f68d861",
+                "14b081cbeedbaf72",
+                "86cde05d27d26821",
+                "2fe0cb81ccc2fcd2"
+            ]
+        ]
+    },
+    {
+        "id": "2c691b070a27ee27",
+        "type": "ui-text",
+        "z": "cd69ce63c01563ea",
+        "group": "b377f7de55d8807a",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "name": "Slot 2 Status Display",
+        "label": "Parking slot2",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "style": true,
+        "font": "Arial,Arial,Helvetica,sans-serif",
+        "fontSize": "20",
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 920,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "df88fb3416e16446",
+        "type": "ui-text",
+        "z": "cd69ce63c01563ea",
+        "group": "b377f7de55d8807a",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "name": "Slot 3 Status Display",
+        "label": "Parking slot3",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "style": true,
+        "font": "Arial,Arial,Helvetica,sans-serif",
+        "fontSize": "20",
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 920,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "ba8650b1c2f564a0",
+        "type": "change",
+        "z": "cd69ce63c01563ea",
+        "name": "Extract Slot 2 Status",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.status",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 360,
+        "wires": [
+            [
+                "05017598ba0cf489"
+            ]
+        ]
+    },
+    {
+        "id": "ea9d18176f68d861",
+        "type": "change",
+        "z": "cd69ce63c01563ea",
+        "name": "Extract Slot 3 Status",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.status",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 480,
+        "wires": [
+            [
+                "0f34b3092662fb96"
+            ]
+        ]
+    },
+    {
+        "id": "b539c5543edc61b1",
+        "type": "debug",
+        "z": "cd69ce63c01563ea",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "b665d144feebb936",
+        "type": "mqtt in",
+        "z": "cd69ce63c01563ea",
+        "name": "Slot 2 MQTT Input",
+        "topic": "smartparking/slot2/status",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "c4bf36e9ddaccc60",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 340,
+        "wires": [
+            [
+                "ba8650b1c2f564a0",
+                "b539c5543edc61b1",
+                "86cde05d27d26821",
+                "2fe0cb81ccc2fcd2"
+            ]
+        ]
+    },
+    {
+        "id": "14b081cbeedbaf72",
+        "type": "debug",
+        "z": "cd69ce63c01563ea",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 320,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "ca1e8af19cf32806",
+        "type": "function",
+        "z": "cd69ce63c01563ea",
+        "name": "Set Slot 1 Status Colour",
+        "func": "\nif (msg.payload === \"OCCUPIED\") {\n    msg.ui_update = {\n        color: \"#e53935\"\n    };\n} \nelse if (msg.payload === \"AVAILABLE\") {\n    msg.ui_update = {\n        color: \"#2e7d32\"\n    };\n}\nelse {\n    msg.ui_update = {\n        color: \"#717171\"\n    };\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 280,
+        "wires": [
+            [
+                "358b97bab48ab8bf"
+            ]
+        ]
+    },
+    {
+        "id": "05017598ba0cf489",
+        "type": "function",
+        "z": "cd69ce63c01563ea",
+        "name": "Set Slot 2 Status Colour",
+        "func": "\nif (msg.payload === \"OCCUPIED\") {\n    msg.ui_update = {\n        color: \"#e53935\"\n    };\n} \nelse if (msg.payload === \"AVAILABLE\") {\n    msg.ui_update = {\n        color: \"#2e7d32\"\n    };\n}\nelse {\n    msg.ui_update = {\n        color: \"#717171\"\n    };\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 440,
+        "wires": [
+            [
+                "2c691b070a27ee27"
+            ]
+        ]
+    },
+    {
+        "id": "0f34b3092662fb96",
+        "type": "function",
+        "z": "cd69ce63c01563ea",
+        "name": "Set Slot 3 Status Colour",
+        "func": "\nif (msg.payload === \"OCCUPIED\") {\n    msg.ui_update = {\n        color: \"#e53935\"\n    };\n} \nelse if (msg.payload === \"AVAILABLE\") {\n    msg.ui_update = {\n        color: \"#2e7d32\"\n    };\n}\nelse {\n    msg.ui_update = {\n        color: \"#717171\"\n    };\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 540,
+        "wires": [
+            [
+                "df88fb3416e16446"
+            ]
+        ]
+    },
+    {
+        "id": "86cde05d27d26821",
+        "type": "function",
+        "z": "cd69ce63c01563ea",
+        "name": "Parking Summary",
+        "func": "\nconst slot = Number(msg.payload.slot);\nconst status = msg.payload.status;\n\nif (![1, 2, 3].includes(slot)) {\n    return null;\n}\n\nconst states = flow.get(\"parkingStates\") || {\n    1: \"UNKNOWN\",\n    2: \"UNKNOWN\",\n    3: \"UNKNOWN\"\n};\n\nstates[slot] = status;\nflow.set(\"parkingStates\", states);\n\nconst available = Object.values(states)\n    .filter(s => s === \"AVAILABLE\").length;\n\nconst occupied = Object.values(states)\n    .filter(s => s === \"OCCUPIED\").length;\n\nconst unknown = 3 - available - occupied;\n\n\nconst alert = occupied === 3\n    ? \"⚠ Alert: All parking slots occupied!\"\n    : \"\";\n\nmsg.payload =\n    \"Total Slots: 3\\n\" +\n    \"Available: \" + available + \"\\n\" +\n    \"Occupied: \" + occupied + \"\\n\" +\n    \"Unknown: \" + unknown +\n    (alert ? \"\\n\" + alert : \"\");\n\nmsg.available = available;\nmsg.occupied = occupied;\n\nreturn msg;\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 640,
+        "wires": [
+            [
+                "7443fbf013b8ba8d",
+                "eaa90e4992d39869",
+                "85d082baaa6aa6bb"
+            ]
+        ]
+    },
+    {
+        "id": "7443fbf013b8ba8d",
+        "type": "ui-text",
+        "z": "cd69ce63c01563ea",
+        "group": "b377f7de55d8807a",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "Parking summary",
+        "label": "Parking slot overview",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "style": true,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 950,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "eaa90e4992d39869",
+        "type": "ui-text",
+        "z": "cd69ce63c01563ea",
+        "group": "b377f7de55d8807a",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "Available slots display",
+        "label": "Available parking slots",
+        "format": "{{msg.available}}",
+        "layout": "col-center",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "value": "available",
+        "valueType": "msg",
+        "x": 940,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "85d082baaa6aa6bb",
+        "type": "ui-text",
+        "z": "cd69ce63c01563ea",
+        "group": "b377f7de55d8807a",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "Occupied slots display",
+        "label": "Occupied parking slots",
+        "format": "{{msg.occupied}}",
+        "layout": "col-center",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "value": "occupied",
+        "valueType": "msg",
+        "x": 940,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "7aac14b8e703fd4e",
+        "type": "sqlite",
+        "z": "cd69ce63c01563ea",
+        "mydb": "c06f58ba20dd9c39",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "Smart Parking Database",
+        "x": 430,
+        "y": 740,
+        "wires": [
+            [
+                "04b13714554a5d63"
+            ]
+        ]
+    },
+    {
+        "id": "478d989953cab23b",
+        "type": "inject",
+        "z": "cd69ce63c01563ea",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 540,
+        "wires": [
+            [
+                "d577aaae3ebaadec"
+            ]
+        ]
+    },
+    {
+        "id": "d577aaae3ebaadec",
+        "type": "function",
+        "z": "cd69ce63c01563ea",
+        "name": "verify parking records",
+        "func": "msg.topic = \"SELECT * FROM parking_logs;\";\nmsg.payload = [];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 140,
+        "y": 660,
+        "wires": [
+            [
+                "7aac14b8e703fd4e"
+            ]
+        ]
+    },
+    {
+        "id": "04b13714554a5d63",
+        "type": "debug",
+        "z": "cd69ce63c01563ea",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "2fe0cb81ccc2fcd2",
+        "type": "function",
+        "z": "cd69ce63c01563ea",
+        "name": "Prepare Live Parking Log",
+        "func": "const data = msg.payload;\n\nif (!data || ![1, 2, 3].includes(Number(data.slot))) {\n    return null;\n}\n\nconst slot = Number(data.slot);\nconst status = String(data.status);\nconst distance = Number(data.distance_cm);\nconst uptime = Number(data.uptime_ms);\n\nif (![\"AVAILABLE\", \"OCCUPIED\"].includes(status)) {\n    return null;\n}\n\nif (!Number.isFinite(distance) || !Number.isFinite(uptime)) {\n    return null;\n}\n\n// Only log status changes. Heartbeats repeat the same status every 10 s, and\n// filtering them here (in message order) avoids racing concurrent SQLite inserts.\nconst lastLogged = flow.get(\"lastLoggedStatus\") || {};\nif (lastLogged[slot] === status) {\n    return null;\n}\nlastLogged[slot] = status;\nflow.set(\"lastLoggedStatus\", lastLogged);\n\nmsg.topic =\n    \"INSERT INTO parking_logs \" +\n    \"(slot, status, distance_cm, uptime_ms, timestamp) VALUES (\" +\n    slot + \", '\" + status + \"', \" +\n    distance + \", \" + Math.trunc(uptime) +\n    \", datetime('now', 'localtime'));\";\n\nmsg.payload = [];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 620,
+        "wires": [
+            [
+                "7aac14b8e703fd4e"
+            ]
+        ]
+    },
+    {
+        "id": "51ae7beba3291a56",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.37.0",
+            "node-red-node-sqlite": "2.0.1"
+        }
+    }
+]

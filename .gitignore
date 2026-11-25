@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+.pytest_cache/
+sketch/build/
+tests/integration/.run/
+*.db
+.DS_Store

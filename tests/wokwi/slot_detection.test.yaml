@@ -1,0 +1,150 @@
+name: Slot detection and LED indicators
+version: 1
+author: Smart Parking Team
+
+steps:
+  - wait-serial: "=== SMART PARKING SYSTEM STARTED ==="
+  - wait-serial: "Threshold: 15 cm"
+  - wait-serial: "Slot 1: UNKNOWN -> AVAILABLE"
+  - wait-serial: "Slot 2: UNKNOWN -> AVAILABLE"
+  - wait-serial: "Slot 3: UNKNOWN -> AVAILABLE"
+  - expect-pin:
+      part-id: esp
+      pin: D19
+      value: 1
+  - expect-pin:
+      part-id: esp
+      pin: D21
+      value: 0
+  - expect-pin:
+      part-id: esp
+      pin: D25
+      value: 1
+  - expect-pin:
+      part-id: esp
+      pin: D26
+      value: 0
+  - expect-pin:
+      part-id: esp
+      pin: RX2
+      value: 1
+  - expect-pin:
+      part-id: esp
+      pin: TX2
+      value: 0
+
+  # Slot 1: car arrives, then leaves
+  - set-control:
+      part-id: ultrasonic1
+      control: distance
+      value: 10
+  - wait-serial: "Slot 1: AVAILABLE -> OCCUPIED"
+  - expect-pin:
+      part-id: esp
+      pin: D19
+      value: 0
+  - expect-pin:
+      part-id: esp
+      pin: D21
+      value: 1
+  - set-control:
+      part-id: ultrasonic1
+      control: distance
+      value: 200
+  - wait-serial: "Slot 1: OCCUPIED -> AVAILABLE"
+  - expect-pin:
+      part-id: esp
+      pin: D19
+      value: 1
+  - expect-pin:
+      part-id: esp
+      pin: D21
+      value: 0
+
+  # Slot 2: car arrives, then leaves
+  - set-control:
+      part-id: ultrasonic2
+      control: distance
+      value: 10
+  - wait-serial: "Slot 2: AVAILABLE -> OCCUPIED"
+  - expect-pin:
+      part-id: esp
+      pin: D25
+      value: 0
+  - expect-pin:
+      part-id: esp
+      pin: D26
+      value: 1
+  - set-control:
+      part-id: ultrasonic2
+      control: distance
+      value: 200
+  - wait-serial: "Slot 2: OCCUPIED -> AVAILABLE"
+  - expect-pin:
+      part-id: esp
+      pin: D25
+      value: 1
+  - expect-pin:
+      part-id: esp
+      pin: D26
+      value: 0
+
+  # Slot 3: car arrives, then leaves
+  - set-control:
+      part-id: ultrasonic3
+      control: distance
+      value: 10
+  - wait-serial: "Slot 3: AVAILABLE -> OCCUPIED"
+  - expect-pin:
+      part-id: esp
+      pin: RX2
+      value: 0
+  - expect-pin:
+      part-id: esp
+      pin: TX2
+      value: 1
+  - set-control:
+      part-id: ultrasonic3
+      control: distance
+      value: 200
+  - wait-serial: "Slot 3: OCCUPIED -> AVAILABLE"
+  - expect-pin:
+      part-id: esp
+      pin: RX2
+      value: 1
+  - expect-pin:
+      part-id: esp
+      pin: TX2
+      value: 0
+
+  # Threshold boundary on slot 1: 14 cm is occupied, 16 cm is available
+  - set-control:
+      part-id: ultrasonic1
+      control: distance
+      value: 14
+  - wait-serial: "Slot 1: AVAILABLE -> OCCUPIED"
+  - set-control:
+      part-id: ultrasonic1
+      control: distance
+      value: 16
+  - wait-serial: "Slot 1: OCCUPIED -> AVAILABLE"
+
+  # A single short reading is not enough to change state (3 readings needed)
+  - set-control:
+      part-id: ultrasonic2
+      control: distance
+      value: 10
+  - delay: 300ms
+  - set-control:
+      part-id: ultrasonic2
+      control: distance
+      value: 200
+  - delay: 1500ms
+  - expect-pin:
+      part-id: esp
+      pin: D25
+      value: 1
+  - expect-pin:
+      part-id: esp
+      pin: D26
+      value: 0
